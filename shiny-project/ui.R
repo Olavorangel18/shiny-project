@@ -15,6 +15,7 @@ body <- dashboardBody(
                 fluidRow(
                     box(title = 'Selecione suas opções', width=12, solidHeader = TRUE, status='warning',
                         selectInput('stock', 'Ação', stock_list, multiple=FALSE),
+                        uiOutput("timedate"),
                         actionButton('go', 'Submeter')
                         )
                 ),

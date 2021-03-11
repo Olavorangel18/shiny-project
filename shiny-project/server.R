@@ -5,10 +5,32 @@ server <- function(input, output) {
     select_stock <- eventReactive(input$go, {
         
         stock_name <- input$stock
+        twin <- input$true_date
+        
         df_stock <- master_df %>% 
             filter(Index == stock_name)
+        ## FALTA -> FILTRAR O DF POR DATA!!
         
         return(df_stock)
+    })
+    
+    output$timedate <- renderUI({
+        
+        stock_name <- input$stock
+        
+        df <- master_df %>% 
+            filter(Index == stock_name)
+        
+        min_time <- min(df$Date)
+        max_time <- max(df$Date)
+        dateRangeInput("true_date", "Período de análise",
+                       end = max_time,
+                       start = min_time,
+                       min  = min_time,
+                       max  = max_time,
+                       format = "dd/mm/yy",
+                       separator = " - ",
+                       language='pt-BR')
     })
     
     ################ OUTPUT #####################
@@ -50,15 +72,14 @@ server <- function(input, output) {
         aux1 <- min(aux)
         aux2 <- max(aux)
         
+        df$Date <- ymd(df$Date)
         a <- df %>% 
             ggplot(aes(Date, Close, group=1)) +
             geom_path() +
             ylab('Preço da Ação em $') +
             coord_cartesian(ylim = c(aux1, aux2)) +
             theme_bw() +
-            theme(axis.title.x=element_blank(),
-                  axis.text.x=element_blank(),
-                  axis.ticks.x=element_blank())
+            scale_x_date(date_labels = "%Y-%m-%d")
         
         a
     })
