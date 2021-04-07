@@ -8,7 +8,7 @@ server <- function(input, output) {
         twin <- input$true_date
         
         df_stock <- master_df %>% 
-            filter(Index == stock_name)
+            filter(Index == stock_name) 
         ## FALTA -> FILTRAR O DF POR DATA!!
         
         return(df_stock)
@@ -28,6 +28,38 @@ server <- function(input, output) {
                        start = min_time,
                        min  = min_time,
                        max  = max_time,
+                       format = "dd/mm/yy",
+                       separator = " - ",
+                       language='pt-BR')
+    })
+    
+    output$timedate_comp <- renderUI({
+        
+        stock_name <- input$stock_comp
+        
+        df <- master_df %>% 
+            filter(Index == stock_name)
+        
+        maxmin_time <- df %>% 
+            group_by(Index) %>% 
+            summarise(MD = min(Date)) %>% 
+            .$MD %>% 
+            max()
+        
+        minmax_time <- df %>% 
+            group_by(Index) %>% 
+            summarise(MD = max(Date)) %>% 
+            .$MD %>% 
+            min()
+        
+        min_time <- maxmin_time
+        max_time <- minmax_time
+        
+        dateRangeInput("true_date_comp", "Período de análise",
+                       end = max_time,
+                       start = min_time,
+                       min    = min_time,
+                       max    = max_time,
                        format = "dd/mm/yy",
                        separator = " - ",
                        language='pt-BR')

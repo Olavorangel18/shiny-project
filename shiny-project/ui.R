@@ -29,6 +29,15 @@ body <- dashboardBody(
                         plotOutput('sh')
                     )
                 ),
+        ),
+        tabItem(tabName = 'comp',
+                fluidRow(
+                    box(title = 'Selecione suas opções', width=12, solidHeader = TRUE, status='warning',
+                        selectInput('stock_comp', 'Ação', stock_list, multiple=TRUE),
+                        uiOutput("timedate_comp"),
+                        actionButton('go_comp', 'Submeter')
+                    )
+                ),            
         )
     )
 )
