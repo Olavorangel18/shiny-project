@@ -38,7 +38,7 @@ server <- function(input, output) {
         stock_name <- input$stock_comp
         
         df <- master_df %>% 
-            filter(Index == stock_name)
+            filter(Index %in% stock_name)
         
         maxmin_time <- df %>% 
             group_by(Index) %>% 
