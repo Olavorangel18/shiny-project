@@ -1,3 +1,10 @@
+#funcções
+
+calcular_moda <- function(v) {
+    x <- unique(v)
+    x[which.max(tabulate(match(v, x)))]
+}
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -23,7 +30,7 @@ server <- function(input, output) {
         
         min_time <- min(df$Date)
         max_time <- max(df$Date)
-        dateRangeInput("true_date", "Período de análise",
+        dateRangeInput("true_date", "Periodo de analise",
                        end = max_time,
                        start = min_time,
                        min  = min_time,
@@ -55,7 +62,7 @@ server <- function(input, output) {
         min_time <- maxmin_time
         max_time <- minmax_time
         
-        dateRangeInput("true_date_comp", "Período de análise",
+        dateRangeInput("true_date_comp", "Periodo de analise",
                        end = max_time,
                        start = min_time,
                        min    = min_time,
@@ -69,12 +76,27 @@ server <- function(input, output) {
     Info_DataTable <- eventReactive(input$go,{
         df <- select_stock()
         
-        mean <- df %>% select(Close) %>% colMeans()
+        mean <- df %>% select(Number) %>% colMeans()
         Media <- mean[[1]]
+        
+        x = select(df,Number)
+        Mediana = apply(x,2,median)
+
+        
+        Moda <- calcular_moda(df$Number)
+
+        DesvioPadrao <- sd(df$Number)
+
+        
+
+        
+        
+
+        
         
         Stock <- input$stock
         
-        df_tb <-  data.frame(Stock, Media)
+        df_tb <-  data.frame(Stock, Media, Moda, Mediana, DesvioPadrao)
         
         df_tb <- as.data.frame(t(df_tb))
         
@@ -100,15 +122,15 @@ server <- function(input, output) {
         # All the inputs
         df <- select_stock()
         
-        aux <- df$Close %>% na.omit() %>% as.numeric()
+        aux <- df$Number %>% na.omit() %>% as.numeric()
         aux1 <- min(aux)
         aux2 <- max(aux)
         
         df$Date <- ymd(df$Date)
         a <- df %>% 
-            ggplot(aes(Date, Close, group=1)) +
+            ggplot(aes(Date, Number, group=1)) +
             geom_path() +
-            ylab('Preço da Ação em $') +
+            ylab('Preco da Acao em $') +
             coord_cartesian(ylim = c(aux1, aux2)) +
             theme_bw() +
             scale_x_date(date_labels = "%Y-%m-%d")

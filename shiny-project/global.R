@@ -6,9 +6,10 @@ library(ggplot2)
 library(DT)
 library(tidyverse)
 library(lubridate)
+library(matrixStats)
 
-master_df <- read.csv('df_stocks.csv')
-stock_list <- c('AAPL', 'FB', 'GOOG')
+master_df <- read.csv('amazon.csv')
+stock_list <- c('Acre', 'Alagoas', 'Pernambuco')
 
 master_df$X <- NULL
 
