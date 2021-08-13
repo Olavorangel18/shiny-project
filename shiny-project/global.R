@@ -8,10 +8,12 @@ library(tidyverse)
 library(lubridate)
 library(matrixStats)
 
-master_df <- read.csv('amazon.csv')
-stock_list <- c('Acre', 'Alagoas', 'Pernambuco')
+master_df <- read.csv('daily-website-visitors.csv')
+stock_list <- c('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday')
+
+
 
 master_df$X <- NULL
 
 master_df <- master_df %>% drop_na()
-master_df$Date <- strptime(master_df$Date, format='%Y-%m-%d')
+master_df$dt <- as.Date(master_df$dt)
