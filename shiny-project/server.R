@@ -108,16 +108,10 @@ server <- function(input, output) {
         ValorMaximo <- max(df$Visits)
         ValorMinimo <- min(df$Visits)
 
+      
+        Dia <- input$stock
         
-
-        
-        
-
-        
-        
-        Stock <- input$stock
-        
-        df_tb <-  data.frame(Stock, Media, Moda, Mediana, DesvioPadrao,ValorMaximo,ValorMinimo)
+        df_tb <-  data.frame(Dia, Media, Moda, Mediana, DesvioPadrao,ValorMaximo,ValorMinimo)
         
         df_tb <- as.data.frame(t(df_tb))
         
@@ -152,13 +146,21 @@ server <- function(input, output) {
             ggplot(aes(dt, Visits, group=1)) +
             geom_path() +
             ylab('Visitas no Website') +
+            xlab('Data') +
             coord_cartesian(ylim = c(aux1, aux2)) +
             theme_bw() +
             scale_x_date(date_labels = "%Y-%m-%d")
         
         a
     })
-
+    
+    output$h <- renderPlot({
+            # All the inputs
+            df <- select_stock()
+            Visitas = df$Visits
+            hist(Visitas, main="Histograma de Visitas", col="lightblue")
+            
+        })
 
  #Segunda Parte
     Info_DataTable_Part2 <- eventReactive(input$go_comp,{
@@ -214,5 +216,26 @@ output$barra <-renderPlot ({
     geom_bar(stat = "identity")
   a
 })
+
+output$doublesh <- renderPlot({
+        # All the inputs
+        df <- select_stock_part2()
+        
+        aux <- df$Visits %>% na.omit() %>% as.numeric()
+        aux1 <- min(aux)
+        aux2 <- max(aux)
+        
+        df$dt <- ymd(df$dt)
+        a <- df %>% 
+            ggplot(aes(dt, Visits, group=1)) +
+            geom_path() +
+            ylab('Visitas no Website') +
+            xlab('Data') +
+            coord_cartesian(ylim = c(aux1, aux2)) +
+            theme_bw() +
+            scale_x_date(date_labels = "%Y-%m-%d")
+        
+        a
+    })
 
 }

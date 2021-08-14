@@ -29,6 +29,11 @@ body <- dashboardBody(
                         plotOutput('sh')
                     )
                 ),
+                fluidRow(
+                    box(title = "Histograma das visitas", width = 12, solidHeader = TRUE,
+                        plotOutput('h')
+                    )
+                ),
         ),
         tabItem(tabName = 'comp',
                 fluidRow(
@@ -39,13 +44,13 @@ body <- dashboardBody(
                     )
                 ),
                 fluidRow(
-                    box(title = "Informacoes sobre o preco do bitcoin", width = 12, solidHeader = TRUE,
+                    box(title = "Correlacao entre as visitas de cada dia", width = 12, solidHeader = TRUE,
                         DTOutput('info2')
                     )
                 ),
                 fluidRow(
-                    box(title = "Grafico dos precos", width = 12, solidHeader = TRUE,
-                        plotOutput('precosLinha')
+                    box(title = "Grafico de linha de cada serie", width = 12, solidHeader = TRUE,
+                        plotOutput('doublesh')
                     )
                 ),
                 fluidRow(

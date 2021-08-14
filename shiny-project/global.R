@@ -6,10 +6,9 @@ library(ggplot2)
 library(DT)
 library(tidyverse)
 library(lubridate)
-library(matrixStats)
 
 master_df <- read.csv('daily-website-visitors.csv')
-stock_list <- c('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday')
+stock_list <- c('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday')
 
 
 
