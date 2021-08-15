@@ -28,12 +28,18 @@ server <- function(input, output) {
       stock_name <- input$stock_comp
       twin <- input$true_date_comp
       
-      df_stock <- master_df %>% 
-        filter(Day == stock_name) 
-      df_stock1 <- df_stock %>% 
+      df_stock_input <- master_df %>% 
+        filter(Day == stock_name[1]) 
+      df_stock1 <- df_stock_input %>% 
         filter(dt >= twin[1] & dt <= twin[2]) 
-
-      return(df_stock1)
+      
+      df_stock_input2 <- master_df %>% 
+        filter(Day == stock_name[2]) 
+      df_stock2 <- df_stock_input2 %>% 
+        filter(dt >= twin[1] & dt <= twin[2]) 
+      
+      df_stock_filter = list(df_stock1, df_stock2)
+      return(df_stock_filter)
     })
 
 
@@ -165,22 +171,27 @@ server <- function(input, output) {
  #Segunda Parte
     Info_DataTable_Part2 <- eventReactive(input$go_comp,{
       df <- select_stock_part2()
-      df <- tibble::rowid_to_column(df, "ID")
+      length1 = length(df[[1]]$Visits)
+      length2 = length(df[[2]]$Visits)
 
+      if(length1 > length2){
+         Correlacao = cor(df[[1]]$Visits[1:length2],df[[2]]$Visits[1:length2])
+         Stock <- input$stock_comp
+         df_tb <-  data.frame(Correlacao)
+
+         df_tb <- as.data.frame(t(df_tb))
+        
+         return(df_tb)
+      }
+      else{
+         Correlacao = cor(df[[1]]$Visits[1:length1],df[[2]]$Visits[1:length1])
+         Stock <- input$stock_comp
+         df_tb <-  data.frame(Correlacao)
+
+         df_tb <- as.data.frame(t(df_tb))
+         return(df_tb)
+      }
       
-    
-      Correlacao <- cor(as.numeric(df$Visits), as.numeric(df$Row))
-      Stock <- input$stock_comp
-      df_tb <-  data.frame(Correlacao)
-
-      df_tb <- as.data.frame(t(df_tb))
-
-      # tb  <- as_tibble(cbind(nms = names(df_tb), t(df_tb)))
-      # tb <- tb %>%
-      #     rename('Informações' = nms,
-      #            'Valores' = V2)
-      #
-      return(df_tb)
     })
 
 output$info2 <- renderDT({
@@ -197,15 +208,13 @@ output$info2 <- renderDT({
 output$barra <-renderPlot ({
   df <- select_stock_part2()
   
+  media1 = mean(df[[1]]$Visits)
+  media2 = mean(df[[2]]$Visits)
   
-  mediaQuantidadeDias = mean(df$Row)
-  mediaVisitas = mean(df$Visits)
+
+  labels <- c(input$stock_comp[1], input$stock_comp[2])
   
-  
-  
-  labels <- c("Dias", "Visitas")
-  
-  values <- c(mediaQuantidadeDias, mediaVisitas)
+  values <- c(media1, media2)
   
   
   data <- data.frame(
@@ -215,26 +224,34 @@ output$barra <-renderPlot ({
   a <- ggplot(data, aes(x=name, y=value)) + 
     geom_bar(stat = "identity")
   a
+  
 })
 
 output$doublesh <- renderPlot({
         # All the inputs
         df <- select_stock_part2()
-        
-        aux <- df$Visits %>% na.omit() %>% as.numeric()
+        aux <- df[[1]]$Visits %>% na.omit() %>% as.numeric()
         aux1 <- min(aux)
         aux2 <- max(aux)
         
-        df$dt <- ymd(df$dt)
-        a <- df %>% 
+        df[[1]]$dt <- ymd(df[[1]]$dt)
+        
+        auxB <- df[[2]]$Visits %>% na.omit() %>% as.numeric()
+        aux3 <- min(auxB)
+        aux4 <- max(auxB)
+        df[[2]]$dt <- ymd(df[[2]]$dt)
+        
+        a <- df[[1]] %>% 
             ggplot(aes(dt, Visits, group=1)) +
             geom_path() +
             ylab('Visitas no Website') +
             xlab('Data') +
             coord_cartesian(ylim = c(aux1, aux2)) +
             theme_bw() +
-            scale_x_date(date_labels = "%Y-%m-%d")
-        
+            geom_path() +
+            geom_path(data=df[[2]], colour="red")+
+            coord_cartesian(ylim = c(aux3, aux4)) +
+            theme_bw()    
         a
     })
 
