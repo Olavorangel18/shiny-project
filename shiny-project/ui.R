@@ -1,5 +1,3 @@
-
-
 header <- dashboardHeader(title = "Projeto de Estatistica")
 
 sidebar <- dashboardSidebar(
@@ -17,7 +15,7 @@ body <- dashboardBody(
                         selectInput('stock', 'Dia', stock_list, multiple=FALSE),
                         uiOutput("timedate"),
                         actionButton('go', 'Submeter')
-                        )
+                    )
                 ),
                 fluidRow(
                     box(title = "Informacoes sobre as visitas", width = 12, solidHeader = TRUE,
@@ -32,6 +30,11 @@ body <- dashboardBody(
                 fluidRow(
                     box(title = "Histograma das visitas", width = 12, solidHeader = TRUE,
                         plotOutput('h')
+                    )
+                ),
+                fluidRow(
+                    box(title = "Boxplot da serie", width = 12, solidHeader = TRUE,
+                        plotOutput('boxplot')
                     )
                 ),
         ),
@@ -53,18 +56,14 @@ body <- dashboardBody(
                         plotOutput('doublesh')
                     )
                 ),
-                fluidRow(
-                    box(title = "Grafico do volume", width = 12, solidHeader = TRUE,
-                        plotOutput('volumeLinha')
-                    )
-                ),
+                
                 fluidRow(
                     box(title = "Comparacao das medias", width = 12, solidHeader = TRUE,
                         plotOutput('barra')
                     )
                 ),
                 fluidRow(
-                    box(title = "Comparacao do precoXvolume", width = 12, solidHeader = TRUE,
+                    box(title = "Comparacao entre os dias", width = 12, solidHeader = TRUE,
                         plotOutput('scatter')
                     )
                 ),       

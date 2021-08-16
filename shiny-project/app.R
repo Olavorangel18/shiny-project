@@ -1,4 +1,4 @@
-setwd('C:/Users/Keaaaaa/Desktop/EstatisticaUFPE/shiny-project/shiny-project')
+setwd('C:\Users\tata-\Desktop\shiny-project')
 
 source('global.R')
 source('ui.R')
