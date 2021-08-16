@@ -12,7 +12,7 @@ body <- dashboardBody(
         tabItem(tabName = 'm',
                 fluidRow(
                     box(title = 'Selecione suas opcoes', width=12, solidHeader = TRUE, status='warning',
-                        selectInput('stock', 'Dia', stock_list, multiple=FALSE),
+                        selectInput('day', 'Dia', day_list, multiple=FALSE),
                         uiOutput("timedate"),
                         actionButton('go', 'Submeter')
                     )
@@ -41,7 +41,7 @@ body <- dashboardBody(
         tabItem(tabName = 'comp',
                 fluidRow(
                     box(title = 'Selecione suas opcoes', width=12, solidHeader = TRUE, status='warning',
-                        selectInput('stock_comp', 'Dias', stock_list, multiple=TRUE),
+                        selectInput('day_comp', 'Dias', day_list, multiple=TRUE),
                         uiOutput("timedate_comp"),
                         actionButton('go_comp', 'Submeter')
                     )

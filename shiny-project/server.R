@@ -9,37 +9,37 @@ calcular_moda <- function(v) {
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   ################### INPUT ####################
-  select_stock <- eventReactive(input$go, {
+  select_day <- eventReactive(input$go, {
     
-    stock_name <- input$stock
+    day_name <- input$day
     twin <- input$true_date
     
-    df_stock <- master_df %>% 
-      filter(Day == stock_name)
+    df_day <- master_df %>% 
+      filter(Day == day_name)
     
-    df_stock1 <- df_stock %>% 
+    df_day1 <- df_day %>% 
       filter(dt >= twin[1] & dt <= twin[2])  
     
-    return(df_stock1)
+    return(df_day1)
   })
   
-  select_stock_part2 <- eventReactive(input$go_comp, {
+  select_day_part2 <- eventReactive(input$go_comp, {
     
-    stock_name <- input$stock_comp
+    day_name <- input$day_comp
     twin <- input$true_date_comp
     
-    df_stock_input <- master_df %>% 
-      filter(Day == stock_name[1]) 
-    df_stock1 <- df_stock_input %>% 
+    df_day_input <- master_df %>% 
+      filter(Day == day_name[1]) 
+    df_day1 <- df_day_input %>% 
       filter(dt >= twin[1] & dt <= twin[2]) 
     
-    df_stock_input2 <- master_df %>% 
-      filter(Day == stock_name[2]) 
-    df_stock2 <- df_stock_input2 %>% 
+    df_day_input2 <- master_df %>% 
+      filter(Day == day_name[2]) 
+    df_day2 <- df_day_input2 %>% 
       filter(dt >= twin[1] & dt <= twin[2]) 
     
-    df_stock_filter = list(df_stock1, df_stock2)
-    return(df_stock_filter)
+    df_day_filter = list(df_day1, df_day2)
+    return(df_day_filter)
   })
   
   
@@ -47,10 +47,10 @@ server <- function(input, output) {
   
   output$timedate <- renderUI({
     
-    stock_name <- input$stock
+    day_name <- input$day
     
     df <- master_df %>% 
-      filter(Day == stock_name)
+      filter(Day == day_name)
     
     min_time <- min(df$dt)
     max_time <- max(df$dt)
@@ -66,10 +66,10 @@ server <- function(input, output) {
   
   output$timedate_comp <- renderUI({
     
-    stock_name <- input$stock_comp
+    day_name <- input$day_comp
     
     df <- master_df %>% 
-      filter(Day %in% stock_name)
+      filter(Day %in% day_name)
     
     maxmin_time <- df %>% 
       group_by(Day) %>% 
@@ -98,7 +98,7 @@ server <- function(input, output) {
   
   ################ OUTPUT #####################
   Info_DataTable <- eventReactive(input$go,{
-    df <- select_stock()
+    df <- select_day()
     
     Media <- mean(df$Visits)
     
@@ -115,7 +115,7 @@ server <- function(input, output) {
     ValorMinimo <- min(df$Visits)
     
     
-    Dia <- input$stock
+    Dia <- input$day
     
     df_tb <-  data.frame(Dia, Media, Moda, Mediana, DesvioPadrao,ValorMaximo,ValorMinimo)
     
@@ -136,7 +136,7 @@ server <- function(input, output) {
   
   output$sh <- renderPlot({
     # All the inputs
-    df <- select_stock()
+    df <- select_day()
     
     aux <- df$Visits %>% na.omit() %>% as.numeric()
     aux1 <- min(aux)
@@ -157,7 +157,7 @@ server <- function(input, output) {
   
   output$h <- renderPlot({
     # All the inputs
-    df <- select_stock()
+    df <- select_day()
     Visitas = df$Visits
     hist(Visitas, main="Histograma de Visitas", col="lightblue")
     
@@ -165,13 +165,13 @@ server <- function(input, output) {
   
   #Segunda Parte
   Info_DataTable_Part2 <- eventReactive(input$go_comp,{
-    df <- select_stock_part2()
+    df <- select_day_part2()
     length1 = length(df[[1]]$Visits)
     length2 = length(df[[2]]$Visits)
     
     if(length1 > length2){
       Correlacao = cor(df[[1]]$Visits[1:length2],df[[2]]$Visits[1:length2])
-      Stock <- input$stock_comp
+      Day <- input$day_comp
       df_tb <-  data.frame(Correlacao)
       
       df_tb <- as.data.frame(t(df_tb))
@@ -180,7 +180,7 @@ server <- function(input, output) {
     }
     else{
       Correlacao = cor(df[[1]]$Visits[1:length1],df[[2]]$Visits[1:length1])
-      Stock <- input$stock_comp
+      Day <- input$day_comp
       df_tb <-  data.frame(Correlacao)
       
       df_tb <- as.data.frame(t(df_tb))
@@ -201,13 +201,13 @@ server <- function(input, output) {
   
   
   output$barra <-renderPlot ({
-    df <- select_stock_part2()
+    df <- select_day_part2()
     
     media1 = mean(df[[1]]$Visits)
     media2 = mean(df[[2]]$Visits)
     
     
-    labels <- c(input$stock_comp[1], input$stock_comp[2])
+    labels <- c(input$day_comp[1], input$day_comp[2])
     
     values <- c(media1, media2)
     
@@ -224,7 +224,7 @@ server <- function(input, output) {
   
   output$doublesh <- renderPlot({
     # All the inputs
-    df <- select_stock_part2()
+    df <- select_day_part2()
     aux <- df[[1]]$Visits %>% na.omit() %>% as.numeric()
     aux1 <- min(aux)
     aux2 <- max(aux)
@@ -254,7 +254,7 @@ server <- function(input, output) {
   })
   output$scatter<- renderPlot({
     #all the inputs
-    df <- select_stock_part2()
+    df <- select_day_part2()
     
     length1 = length(df[[1]]$Visits)
     length2 = length(df[[2]]$Visits)
@@ -274,16 +274,16 @@ server <- function(input, output) {
     }
     
     plot(x = preco, y = volume,
-         xlab = input$stock_comp[1], 
-         ylab = input$stock_comp[2],
+         xlab = input$day_comp[1], 
+         ylab = input$day_comp[2],
          pch=19,	 
-         main = paste(input$stock_comp[1], input$stock_comp[2],  sep = " Vs " ))
+         main = paste(input$day_comp[1], input$day_comp[2],  sep = " Vs " ))
     
   })
   
   output$boxplot <- renderPlot({
     # All the inputs
-    df <- select_stock()
+    df <- select_day()
     
     Visitas = df$Visits
     

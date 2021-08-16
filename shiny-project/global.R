@@ -8,7 +8,7 @@ library(tidyverse)
 library(lubridate)
 
 master_df <- read.csv('daily-website-visitors.csv')
-stock_list <- c('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday')
+day_list <- c('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday')
 
 
 
