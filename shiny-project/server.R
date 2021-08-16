@@ -1,4 +1,4 @@
-#funcções
+#funções
 
 calcular_moda <- function(v) {
   x <- unique(v)
@@ -121,11 +121,6 @@ server <- function(input, output) {
     
     df_tb <- as.data.frame(t(df_tb))
     
-    # tb  <- as_tibble(cbind(nms = names(df_tb), t(df_tb)))
-    # tb <- tb %>% 
-    #     rename('Informações' = nms,
-    #            'Valores' = V2)
-    # 
     return(df_tb)
   })
   
@@ -240,18 +235,21 @@ server <- function(input, output) {
     aux3 <- min(auxB)
     aux4 <- max(auxB)
     df[[2]]$dt <- ymd(df[[2]]$dt)
+
+    aux5 <- min(aux1, aux3)
+    aux6 <- max(aux2, aux4)
     
     a <- df[[1]] %>% 
       ggplot(aes(dt, Visits, group=1)) +
       geom_path() +
       ylab('Visitas no Website') +
       xlab('Data') +
-      coord_cartesian(ylim = c(aux1, aux2)) +
+      coord_cartesian(ylim = c(aux5, aux6)) +
       theme_bw() +
       geom_path() +
       geom_path(data=df[[2]], colour="red")+
-      coord_cartesian(ylim = c(aux3, aux4)) +
-      theme_bw()    
+      theme_bw() +
+      scale_x_date(date_labels = "%Y-%m-%d")    
     a
   })
   output$scatter<- renderPlot({
